@@ -35,9 +35,10 @@ model Follows {
   id          String @id @default(auto()) @map("_id") @db.ObjectId
   follower    User   @relation("follower", fields: [followerId], references: [id])
   followerId  String @db.ObjectId
-  following   User   @relation("following", fields: [followerId], references: [id])
+  following   User   @relation("following", fields: [followingId], references: [id])
   followingId String @db.ObjectId
 }
+
 
 model Post {
   id        String    @id @default(auto()) @map("_id") @db.ObjectId
