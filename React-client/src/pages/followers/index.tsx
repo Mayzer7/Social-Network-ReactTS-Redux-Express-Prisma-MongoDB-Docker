@@ -12,11 +12,11 @@ export const Followers = () => {
   }
 
   return currentUser.followers.length > 0 ? (
-    <div className="gap-5 flex flex-col">
+    <div className="gap-4 flex flex-col">
       {currentUser.followers.map((user) => (
         <Link to={`/users/${user.follower.id}`} key={user.follower.id}>
-          <Card>
-            <CardBody className="block">
+          <Card className="hover:shadow-md transition-shadow">
+            <CardBody className="p-4">
               <User
                 name={user.follower.name ?? ""}
                 avatarUrl={user.follower.avatarUrl ?? ""}
@@ -28,6 +28,11 @@ export const Followers = () => {
       ))}
     </div>
   ) : (
-    <h2>У вас нет подписчиков</h2>
+    <Card>
+      <CardBody className="text-center py-12">
+        <h2 className="text-xl font-semibold text-default-500">У вас нет подписчиков</h2>
+        <p className="text-default-400 mt-2">Когда на вас подпишутся, они появятся здесь</p>
+      </CardBody>
+    </Card>
   )
 }

@@ -73,7 +73,7 @@ export const Card = ({
         await triggerGetAllPosts().unwrap()
         break
       case "current-post":
-        await triggerGetAllPosts().unwrap()
+        await triggerGetPostById(id).unwrap()
         break
       case "comment":
         await triggerGetPostById(id).unwrap()
@@ -84,17 +84,19 @@ export const Card = ({
   }
 
   const handleClick = async () => {
+    setError("")
+    
     try {
       likedByUser
         ? await unlikePost(id).unwrap()
         : await likePost({ postId: id }).unwrap()
-
-      await refetchPosts()
     } catch (err) {
       if (hasErrorField(err)) {
         setError(err.data.error)
+        setTimeout(() => setError(""), 3000)
       } else {
-        setError(err as string)
+        setError("Произошла ошибка при обработке лайка")
+        setTimeout(() => setError(""), 3000)
       }
     }
   }
@@ -129,39 +131,50 @@ export const Card = ({
   }
 
   return (
-    <NextUiCard className="mb-5">
-      <CardHeader className="justify-between items-center bg-transparent">
-        <Link to={`/users/${authorId}`}>
+    <NextUiCard className="mb-4 shadow-sm hover:shadow-md transition-shadow">
+      <CardHeader className="justify-between items-start gap-2 pb-2">
+        <Link to={`/users/${authorId}`} className="flex-1 min-w-0">
           <User
             name={name}
-            className="text-small font-semibold leading-none text-default-600"
+            className="text-small font-semibold leading-none text-default-600 hover:text-primary transition-colors"
             avatarUrl={avatarUrl}
             description={createdAt && formatToClientDate(createdAt)}
           />
         </Link>
         {authorId === currentUser?.id && (
-          <div className="cursor-pointer" onClick={handleDelete}>
+          <button
+            className="cursor-pointer text-default-400 hover:text-danger transition-colors p-1"
+            onClick={handleDelete}
+            aria-label="Удалить"
+          >
             {deletePostStatus.isLoading || deleteCommentStatus.isLoading ? (
-              <Spinner />
+              <Spinner size="sm" />
             ) : (
-              <RiDeleteBinLine />
+              <RiDeleteBinLine className="text-xl" />
             )}
-          </div>
+          </button>
         )}
       </CardHeader>
-      <CardBody className="px-3 py-2 mb-5">
+      <CardBody className="px-4 py-3">
         <Typography>{content}</Typography>
       </CardBody>
       {cardFor !== "comment" && (
-        <CardFooter className="gap-3">
-          <div className="flex gap-5 items-center">
-            <div onClick={handleClick}>
+        <CardFooter className="gap-3 pt-2">
+          <div className="flex gap-6 items-center">
+            <button
+              onClick={handleClick}
+              className="flex items-center gap-2 hover:opacity-70 transition-opacity"
+              aria-label={likedByUser ? "Убрать лайк" : "Поставить лайк"}
+            >
               <MetaInfo
                 count={likesCount}
                 Icon={likedByUser ? FcDislike : MdOutlineFavoriteBorder}
               />
-            </div>
-            <Link to={`/posts/${id}`}>
+            </button>
+            <Link
+              to={`/posts/${id}`}
+              className="flex items-center gap-2 hover:opacity-70 transition-opacity"
+            >
               <MetaInfo count={commentsCount} Icon={FaRegComment} />
             </Link>
           </div>

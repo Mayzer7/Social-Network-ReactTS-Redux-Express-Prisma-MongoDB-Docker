@@ -77,22 +77,25 @@ export const UserProfile = () => {
   return (
     <>
       <GoBack />
-      <div className="flex items-stretch gap-4">
-        <Card className="flex flex-col items-center text-center space-y-4 p-5 flex-2">
-          <Image
-            src={`${BASE_URL}${data.avatarUrl}`}
-            alt={data.name}
-            width={200}
-            height={200}
-            className="border-4 border-white"
-          />
-          <div className="flex flex-col text-2xl font-bold gap-4 items-center">
-            {data.name}
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
+        <Card className="flex flex-col items-center text-center gap-4 p-6 w-full lg:w-auto lg:min-w-[280px]">
+          <div className="relative">
+            <Image
+              src={`${BASE_URL}${data.avatarUrl}`}
+              alt={data.name}
+              width={180}
+              height={180}
+              className="object-cover rounded-full border-4 border-default-200"
+              radius="full"
+            />
+          </div>
+          <div className="flex flex-col gap-3 items-center w-full">
+            <h2 className="text-2xl font-bold">{data.name}</h2>
             {currentUser?.id !== id ? (
               <Button
                 color={data?.isFollowing ? "default" : "primary"}
-                variant="flat"
-                className="gap-2"
+                variant={data?.isFollowing ? "bordered" : "solid"}
+                className="gap-2 w-full sm:w-auto"
                 onClick={handleFollow}
                 endContent={
                   data?.isFollowing ? (
@@ -106,6 +109,9 @@ export const UserProfile = () => {
               </Button>
             ) : (
               <Button
+                color="primary"
+                variant="flat"
+                className="gap-2 w-full sm:w-auto"
                 endContent={<CiEdit />}
                 onClick={() => onOpen()}
               >
@@ -114,17 +120,22 @@ export const UserProfile = () => {
             )}
           </div>
         </Card>
-        <Card className="flex flex-col space-y-4 p-5 flex-1">
-          <ProfileInfo title="Почта:" info={data.email} />
-          <ProfileInfo title="Местоположение:" info={data.location} />
-          <ProfileInfo title="Дата рождения:" info={formatToClientDate(data.dateOfBirth)} />
-          <ProfileInfo title="Обо мне:" info={data.bio} />
+        
+        <div className="flex flex-col gap-4 flex-1">
+          <Card className="p-6">
+            <div className="flex flex-col gap-4">
+              <ProfileInfo title="Почта:" info={data.email} />
+              <ProfileInfo title="Местоположение:" info={data.location} />
+              <ProfileInfo title="Дата рождения:" info={formatToClientDate(data.dateOfBirth)} />
+              <ProfileInfo title="Обо мне:" info={data.bio} />
+            </div>
+          </Card>
           
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <CountInfo count={data.followers.length} title="Подписчики"/>
             <CountInfo count={data.following.length} title="Подписки"/>
           </div>
-        </Card>
+        </div>
       </div>
       <EditProfile isOpen={isOpen} onClose={handleClose} user={data} />
     </>

@@ -25,15 +25,24 @@ export const Layout = () => {
     <>
       <Header />
       <Container>
-        <div className="flex-2 p-4">
-          <NavBar />
-        </div>
-        <div className="flex-1 p-4">
+        {/* Левое меню - показывается только на больших экранах (lg+) */}
+        <aside className="hidden lg:block lg:w-64 xl:w-72 flex-shrink-0">
+          <div className="sticky top-20 space-y-4">
+            <NavBar />
+          </div>
+        </aside>
+        
+        {/* Основной контент */}
+        <main className="flex-1 min-w-0 max-w-2xl mx-auto w-full px-2 sm:px-0">
           <Outlet />
-        </div>
-        <div className="flex-2 p-4">
-          <div className="flex-col flex gap-5">{!user && <Profile />}</div>
-        </div>
+        </main>
+        
+        {/* Правый сайдбар с профилем - показывается только на очень больших экранах (xl+) */}
+        <aside className="hidden xl:block xl:w-72 flex-shrink-0">
+          <div className="sticky top-20">
+            {!user && <Profile />}
+          </div>
+        </aside>
       </Container>
     </>
   )

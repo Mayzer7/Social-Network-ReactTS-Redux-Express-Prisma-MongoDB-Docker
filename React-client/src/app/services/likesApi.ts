@@ -9,12 +9,20 @@ export const likesApi = api.injectEndpoints({
                 method: "POST",
                 body,
             }),
+            invalidatesTags: (result, error, arg) => [
+                { type: "Post", id: arg.postId },
+                { type: "Post", id: "LIST" },
+            ],
         }),
         unlikePost: builder.mutation<void, string>({
             query: postId => ({
                 url: `/likes/${postId}`,
                 method: "DELETE",
             }),
+            invalidatesTags: (result, error, postId) => [
+                { type: "Post", id: postId },
+                { type: "Post", id: "LIST" },
+            ],
         }),
     }),
 })

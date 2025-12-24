@@ -10,21 +10,26 @@ export const Auth = () => {
   useAuthGuard()
 
   return (
-    <div className="flex items-center justify-center h-screen">
-      <div className="flex flex-col">
-        <Card className="max-w-full w-[340px] h-[450px]">
-          <CardBody className="overflow-hidden">
+    <div className="flex items-center justify-center min-h-screen px-4 py-8">
+      <div className="flex flex-col w-full max-w-md">
+        <Card className="w-full">
+          <CardBody className="p-6">
             <Tabs
               fullWidth
-              size="md"
+              size="lg"
               selectedKey={selected}
               onSelectionChange={(key) => setSelected(key as string)}
+              className="w-full"
             >
               <Tab key="login" title="Вход">
-                <Login setSelected={setSelected} />
+                <div className="pt-4">
+                  <Login setSelected={setSelected} />
+                </div>
               </Tab>
               <Tab key="sign-up" title="Регистрация">
-                <Register setSelected={setSelected} />
+                <div className="pt-4">
+                  <Register setSelected={setSelected} />
+                </div>
               </Tab>
             </Tabs>
           </CardBody>

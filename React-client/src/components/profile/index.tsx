@@ -15,22 +15,24 @@ export const Profile = () => {
   const { name, email, avatarUrl, id } = current
 
   return (
-    <Card className="py-4 w-[302px]">
-      <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
+    <Card className="w-full">
+      <CardHeader className="pb-0 pt-4 px-4 flex-col items-center">
         <Image
-          alt="Card background"
-          className="object-cover rounded-xl"
+          alt="Profile avatar"
+          className="object-cover rounded-full"
           src={`${BASE_URL}${avatarUrl}`}
-          width={370}
+          width={120}
+          height={120}
+          radius="full"
         />
       </CardHeader>
-      <CardBody className="overflow-visible py-2">
-        <Link to={`/users/${id}`}>
-          <h4 className="font-bold text-large mb-2">{name}</h4>
+      <CardBody className="overflow-visible py-4 px-4">
+        <Link to={`/users/${id}`} className="block text-center">
+          <h4 className="font-bold text-lg mb-2 hover:text-primary transition-colors">{name}</h4>
         </Link>
-        <p className="text-default-500 flex items-center gap-2">
+        <p className="text-default-500 flex items-center justify-center gap-2 text-sm">
           <MdAlternateEmail />
-          {email}
+          <span className="truncate">{email}</span>
         </p>
       </CardBody>
     </Card>

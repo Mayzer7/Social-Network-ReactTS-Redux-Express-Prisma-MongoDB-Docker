@@ -38,12 +38,16 @@ export const CurrentPost = () => {
         likedByUser={likedByUser}
         createdAt={createdAt}
       />
-      <div className="mt-10">
+      <div className="mt-6">
         <CreateComment />
       </div>
-      <div className="mt-10">
-        {data.comments
-          ? data.comments.map((comment) => (
+      <div className="mt-6">
+        <h3 className="text-lg font-semibold mb-4">
+          Комментарии {comments?.length ? `(${comments.length})` : ""}
+        </h3>
+        {data.comments && data.comments.length > 0 ? (
+          <div className="space-y-4">
+            {data.comments.map((comment) => (
               <Card
                 cardFor="comment"
                 key={comment.id}
@@ -54,8 +58,16 @@ export const CurrentPost = () => {
                 commentId={comment.id}
                 id={id}
               />
-            ))
-          : null}
+            ))}
+          </div>
+        ) : (
+          <Card>
+            <div className="text-center py-8">
+              <p className="text-default-500">Пока нет комментариев</p>
+              <p className="text-sm text-default-400 mt-1">Будьте первым, кто оставит комментарий!</p>
+            </div>
+          </Card>
+        )}
       </div>
     </>
   )

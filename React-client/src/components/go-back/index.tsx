@@ -10,12 +10,13 @@ export const GoBack = () => {
   }
 
   return (
-    <div
+    <button
       onClick={handleGoBack}
-      className="text-default-500 flex items-center gap-2 mb-10 cursor-pointer"
+      className="text-default-500 flex items-center gap-2 mb-6 hover:text-primary transition-colors cursor-pointer"
+      aria-label="Назад"
     >
-      <FaRegArrowAltCircleLeft />
-      Назад
-    </div>
+      <FaRegArrowAltCircleLeft className="text-xl" />
+      <span className="font-medium">Назад</span>
+    </button>
   )
 }

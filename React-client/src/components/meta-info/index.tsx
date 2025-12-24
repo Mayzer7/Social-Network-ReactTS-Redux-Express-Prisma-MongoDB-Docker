@@ -8,13 +8,15 @@ type Props = {
 
 export const MetaInfo: React.FC<Props> = ({ count, Icon }) => {
   return (
-    <div className="flex items-center gap-2 cursor-pointer">
+    <div className="flex items-center gap-2 cursor-pointer group">
       {count > 0 && (
-        <p className="font-semibold text-default-400 text-l ">{count}</p>
+        <p className="font-semibold text-default-500 text-sm group-hover:text-primary transition-colors">
+          {count}
+        </p>
       )}
-      <p className="text-default-400 text-xl hover:text-2xl ease-in duration-100">
+      <div className="text-default-400 text-xl group-hover:text-primary group-hover:scale-110 transition-all duration-200">
         <Icon />
-      </p>
+      </div>
     </div>
   )
 }
