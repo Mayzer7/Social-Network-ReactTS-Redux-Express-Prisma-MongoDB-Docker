@@ -9,19 +9,19 @@ import { LuSunMedium } from "react-icons/lu"
 import { FaRegMoon } from "react-icons/fa"
 import { useDispatch, useSelector } from "react-redux"
 import { CiLogout } from "react-icons/ci"
-// import { logout, selectIsAuthenticated } from "../../features/user/userSlice"
+import { logout, selectIsAuthenticated } from "../../features/user/userSlice"
 import { useNavigate } from "react-router-dom"
 import { useContext } from "react"
 import { ThemeContext } from "../theme-provider"
 
 export const Header = () => {
-//   const isAuthenticated = useSelector(selectIsAuthenticated)
+  const isAuthenticated = useSelector(selectIsAuthenticated)
   const { theme, toggleTheme } = useContext(ThemeContext)
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
   const hadleLogout = () => {
-    // dispatch(logout())
+    dispatch(logout())
     localStorage.removeItem('token')
     navigate("/auth")
   }
@@ -40,7 +40,7 @@ export const Header = () => {
           {theme === "light" ? <FaRegMoon /> : <LuSunMedium />}
         </NavbarItem>
         <NavbarItem>
-          {/* {isAuthenticated && (
+          {isAuthenticated && (
             <Button
               color="default"
               variant="flat"
@@ -49,7 +49,7 @@ export const Header = () => {
             >
               <CiLogout /> <span>Выйти</span>
             </Button>
-          )} */}
+          )}
         </NavbarItem>
       </NavbarContent>
     </Navbar>
