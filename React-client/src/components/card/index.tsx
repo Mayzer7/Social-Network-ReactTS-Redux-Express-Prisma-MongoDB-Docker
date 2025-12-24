@@ -117,6 +117,7 @@ export const Card = ({
         default:
           throw new Error("Неверный аргумент cardFor")
       }
+
     } catch (err) {
       console.log(err)
       if (hasErrorField(err)) {
