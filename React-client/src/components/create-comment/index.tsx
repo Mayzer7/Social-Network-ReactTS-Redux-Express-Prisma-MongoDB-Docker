@@ -4,26 +4,24 @@ import { useForm, Controller } from "react-hook-form"
 import { ErrorMessage } from "../error-message"
 import { useCreateCommentMutation } from "../../app/services/commentsApi"
 import { useParams } from "react-router-dom"
-import { useLazyGetPostByIdQuery } from "../../app/services/postsApi"
 
 export const CreateComment = () => {
   const { id } = useParams<{ id: string }>()
-  const [createComment] = useCreateCommentMutation()
-  const [getPostById] = useLazyGetPostByIdQuery()
+  const [createComment, { isLoading }] = useCreateCommentMutation()
 
   const {
     handleSubmit,
     control,
     formState: { errors },
     setValue,
+    reset,
   } = useForm()
 
   const onSubmit = handleSubmit(async (data) => {
     try {
       if (id) {
         await createComment({ content: data.comment, postId: id }).unwrap()
-        await getPostById(id).unwrap()
-        setValue("comment", "")
+        reset()
       }
     } catch (error) {
       console.log("err", error)
@@ -56,6 +54,7 @@ export const CreateComment = () => {
         className="flex-end"
         endContent={<IoMdCreate />}
         type="submit"
+        isLoading={isLoading}
       >
         Ответить
       </Button>

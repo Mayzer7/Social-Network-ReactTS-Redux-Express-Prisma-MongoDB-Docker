@@ -17,6 +17,9 @@ const CommentController = {
                     postId,
                     userId,
                     content
+                },
+                include: {
+                    user: true
                 }
             })
 
