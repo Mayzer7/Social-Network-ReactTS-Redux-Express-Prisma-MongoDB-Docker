@@ -14,7 +14,10 @@ export default defineConfig({
   server: {
     open: true,
   },
-
+  build: {
+    outDir: "build",
+    sourcemap: true,
+  },
   test: {
     root: import.meta.dirname,
     name: packageJson.name,
