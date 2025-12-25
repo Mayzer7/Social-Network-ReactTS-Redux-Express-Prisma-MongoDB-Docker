@@ -1,4 +1,5 @@
 const { prisma } = require("../prisma/prisma-client");
+const { createNotification } = require("./notification-controller");
 
 const LikeController = {
     likePost: async (req, res) => {
@@ -29,8 +30,18 @@ const LikeController = {
                 data: {
                     postId,
                     userId
+                },
+                include: {
+                    post: {
+                        select: {
+                            authorId: true
+                        }
+                    }
                 }
-            })
+            });
+
+            // Создаем уведомление для автора поста
+            await createNotification('like', like.post.authorId, userId, postId);
 
             res.json(like);
         } catch (error) {

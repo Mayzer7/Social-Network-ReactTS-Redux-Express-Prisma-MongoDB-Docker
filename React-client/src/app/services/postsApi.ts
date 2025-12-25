@@ -16,6 +16,9 @@ export const postsApi = api.injectEndpoints({
                 url: "/posts",
                 method: "GET"
             }),
+            transformResponse: (response: { posts: Post[] }) => {
+                return response.posts || []
+            },
             providesTags: (result) =>
                 result
                     ? [

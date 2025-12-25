@@ -5,20 +5,16 @@ import { useGetAllPostsQuery } from "../../app/services/postsApi"
 export const Posts = () => {
   const { data, isLoading } = useGetAllPostsQuery()
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center py-12">
-        <p className="text-default-500">Загрузка постов...</p>
-      </div>
-    )
-  }
-
   return (
     <>
       <div className="mb-6 w-full">
         <CreatePost />
       </div>
-      {data && data.length > 0 ? (
+      {isLoading ? (
+        <div className="flex justify-center items-center py-12">
+          <p className="text-default-500">Загрузка постов...</p>
+        </div>
+      ) : data && data.length > 0 ? (
         data.map(
           ({
             content,

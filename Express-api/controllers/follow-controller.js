@@ -1,5 +1,5 @@
 const { prisma } = require("../prisma/prisma-client");
-const { connect } = require("../routes");
+const { createNotification } = require("./notification-controller");
 
 const FollowController = {
     followUser: async (req, res) => {
@@ -30,10 +30,13 @@ const FollowController = {
 
             await prisma.follows.create({
                 data: {
-                    follower: { connect: { id: userId } },
-                    following: { connect: { id: followingId } },
+                    followerId: userId,
+                    followingId: followingId
                 }
-            })
+            });
+
+            // Создаем уведомление
+            await createNotification('follow', followingId, userId);
 
             res.status(201).json({ message: 'Вы подписались' })
         } catch (error) {

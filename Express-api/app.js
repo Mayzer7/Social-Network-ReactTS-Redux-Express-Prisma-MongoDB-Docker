@@ -1,6 +1,5 @@
 const createError = require('http-errors');
 const express = require('express');
-const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const fs = require('fs');
@@ -14,7 +13,6 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.set('view engine', 'jade');
 
 // Раздача статических файлов из папки 'uploads'
 app.use('/uploads', express.static('uploads'));
@@ -32,13 +30,14 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  // return JSON error response for API
+  const status = err.status || 500;
+  const message = err.message || 'Internal server error';
+  
+  res.status(status).json({
+    error: message,
+    ...(req.app.get('env') === 'development' && { stack: err.stack })
+  });
 });
 
 module.exports = app;

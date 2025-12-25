@@ -25,10 +25,14 @@ model User {
   bio         String?
   location    String?
   posts       Post[]
+  reposts     Repost[]
   likes       Like[]
   comments    Comment[]
   followers   Follows[] @relation("following")
   following   Follows[] @relation("follower")
+  bookmarks   Bookmark[]
+  notifications Notification[]
+  mentions    Mention[]
 }
 
 model Follows {
@@ -41,13 +45,24 @@ model Follows {
 
 
 model Post {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  content   String
-  author    User      @relation(fields: [authorId], references: [id])
-  authorId  String    @db.ObjectId
-  likes     Like[]
-  comments  Comment[]
-  createdAt DateTime  @default(now())
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  content       String
+  author        User        @relation(fields: [authorId], references: [id])
+  authorId      String      @db.ObjectId
+  privacy       String      @default("public") // public, followers, private
+  originalPostId String?    @db.ObjectId // Для репостов
+  originalPost  Post?       @relation("Repost", fields: [originalPostId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  reposts       Post[]      @relation("Repost")
+  repostRecords Repost[]
+  images        PostImage[]
+  likes         Like[]
+  comments      Comment[]
+  repostsCount  Int         @default(0)
+  bookmarks     Bookmark[]
+  hashtags      PostHashtag[]
+  mentions      Mention[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 }
 
 model Like {
@@ -59,10 +74,85 @@ model Like {
 }
 
 model Comment {
-  id      String @id @default(auto()) @map("_id") @db.ObjectId
-  content String
-  user    User   @relation(fields: [userId], references: [id])
-  userId  String @db.ObjectId
-  post    Post   @relation(fields: [postId], references: [id])
-  postId  String @db.ObjectId
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  content       String
+  user          User      @relation(fields: [userId], references: [id])
+  userId        String    @db.ObjectId
+  post          Post      @relation(fields: [postId], references: [id])
+  postId        String    @db.ObjectId
+  parentId      String?   @db.ObjectId // Для ответов на комментарии
+  parent        Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  replies       Comment[] @relation("CommentReplies")
+  mentions      Mention[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Repost {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @db.ObjectId
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    String   @db.ObjectId
+  createdAt DateTime @default(now())
+
+  @@unique([userId, postId])
+}
+
+model PostImage {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  url    String
+  post   Post   @relation(fields: [postId], references: [id])
+  postId String @db.ObjectId
+}
+
+model Hashtag {
+  id        String        @id @default(auto()) @map("_id") @db.ObjectId
+  name      String        @unique
+  postTags  PostHashtag[]
+  createdAt DateTime      @default(now())
+}
+
+model PostHashtag {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    String   @db.ObjectId
+  hashtag   Hashtag  @relation(fields: [hashtagId], references: [id])
+  hashtagId String   @db.ObjectId
+
+  @@unique([postId, hashtagId])
+}
+
+model Bookmark {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @db.ObjectId
+  post   Post   @relation(fields: [postId], references: [id])
+  postId String @db.ObjectId
+  createdAt DateTime @default(now())
+
+  @@unique([userId, postId])
+}
+
+model Mention {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @db.ObjectId
+  post      Post?    @relation(fields: [postId], references: [id])
+  postId    String?  @db.ObjectId
+  comment   Comment? @relation(fields: [commentId], references: [id])
+  commentId String?  @db.ObjectId
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  type       String   // 'like', 'comment', 'follow', 'repost', 'mention', 'reply'
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String   @db.ObjectId
+  fromUserId String?  @db.ObjectId
+  postId     String?  @db.ObjectId
+  commentId  String?  @db.ObjectId
+  read       Boolean  @default(false)
+  createdAt  DateTime @default(now())
 }
