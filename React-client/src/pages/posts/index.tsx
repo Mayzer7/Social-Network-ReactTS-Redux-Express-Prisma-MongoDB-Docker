@@ -25,6 +25,7 @@ export const Posts = () => {
             likes,
             likedByUser,
             createdAt,
+            images,
           }) => (
             <Card
               key={id}
@@ -38,6 +39,7 @@ export const Posts = () => {
               likedByUser={likedByUser}
               createdAt={createdAt}
               cardFor="post"
+              images={images}
             />
           ),
         )

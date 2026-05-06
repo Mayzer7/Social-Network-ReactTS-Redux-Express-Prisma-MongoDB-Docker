@@ -21,6 +21,7 @@ export const CurrentPost = () => {
     author,
     likedByUser,
     createdAt,
+    images,
   } = data
 
   return (
@@ -37,6 +38,7 @@ export const CurrentPost = () => {
         id={id}
         likedByUser={likedByUser}
         createdAt={createdAt}
+        images={images}
       />
       <div className="mt-6">
         <CreateComment />

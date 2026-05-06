@@ -29,6 +29,9 @@ import { Spinner } from "@heroui/react"
 import { ErrorMessage } from "../error-message"
 import { useState } from "react"
 import { hasErrorField } from "../../utils/has-error-field"
+import { PostImage } from "../../app/types"
+import { BASE_URL } from "../../constants"
+import { ImageViewer } from "../image-viewer"
 
 type Props = {
   avatarUrl: string
@@ -42,6 +45,7 @@ type Props = {
   id?: string
   cardFor: "comment" | "post" | "current-post"
   likedByUser?: boolean
+  images?: PostImage[]
 }
 
 export const Card = ({
@@ -56,6 +60,7 @@ export const Card = ({
   likedByUser = false,
   createdAt,
   commentId = "",
+  images = [],
 }: Props) => {
   const [likePost] = useLikePostMutation()
   const [unlikePost] = useUnlikePostMutation()
@@ -64,8 +69,15 @@ export const Card = ({
   const [deletePost, deletePostStatus] = useDeletePostMutation()
   const [deleteComment, deleteCommentStatus] = useDeleteCommentMutation()
   const [error, setError] = useState("")
+  const [viewerOpen, setViewerOpen] = useState(false)
+  const [viewerIndex, setViewerIndex] = useState(0)
   const navigate = useNavigate()
   const currentUser = useSelector(selectCurrent)
+
+  const openViewer = (index: number) => {
+    setViewerIndex(index)
+    setViewerOpen(true)
+  }
 
   const refetchPosts = async () => {
     switch (cardFor) {
@@ -155,8 +167,36 @@ export const Card = ({
           </button>
         )}
       </CardHeader>
-      <CardBody className="px-4 py-3">
+      <CardBody className="px-4 py-3 flex flex-col gap-3">
         <Typography>{content}</Typography>
+        {images.length > 0 && (
+          <div
+            className={`grid gap-2 ${images.length === 1 ? "grid-cols-1" : "grid-cols-2"}`}
+          >
+            {images.map((image, index) => (
+              <button
+                key={image.id}
+                type="button"
+                onClick={() => openViewer(index)}
+                className="overflow-hidden rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                <img
+                  src={`${BASE_URL}${image.url}`}
+                  alt="post image"
+                  className="w-full object-cover max-h-72 hover:opacity-90 transition-opacity"
+                />
+              </button>
+            ))}
+          </div>
+        )}
+        {images.length > 0 && (
+          <ImageViewer
+            images={images}
+            initialIndex={viewerIndex}
+            isOpen={viewerOpen}
+            onClose={() => setViewerOpen(false)}
+          />
+        )}
       </CardBody>
       {cardFor !== "comment" && (
         <CardFooter className="gap-3 pt-2">

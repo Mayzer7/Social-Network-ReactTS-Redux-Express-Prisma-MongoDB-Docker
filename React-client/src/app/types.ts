@@ -25,6 +25,12 @@ export type Follows = {
   followingId: string
 }
 
+export type PostImage = {
+  id: string
+  url: string
+  postId: string
+}
+
 export type Post = {
   id: string
   content: string
@@ -35,6 +41,7 @@ export type Post = {
   likedByUser: boolean
   createdAt: Date
   updatedAt: Date
+  images?: PostImage[]
 }
 
 export type Like = {
